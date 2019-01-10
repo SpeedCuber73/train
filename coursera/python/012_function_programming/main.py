@@ -4,7 +4,7 @@
 
 
 def from_int_to_str(int_list):
-    return list(map(lambda x: str(x), int_list))
+    return list(map(str, int_list))
 
 
 my_list = [1, 43, 22]

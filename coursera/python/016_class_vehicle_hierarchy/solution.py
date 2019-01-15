@@ -2,8 +2,10 @@ import os
 import csv
 import sys
 
-
 car_type = ["car", "truck", "spec_machine"]
+car = 0
+truck = 1
+spec_machine = 2
 
 
 class WrongFormatError(Exception):
@@ -13,6 +15,14 @@ class WrongFormatError(Exception):
 
 
 class CarBase:
+    idx_car_type = 0
+    idx_brand = 1
+    idx_passenger_seats_count = 2
+    idx_photo_file_name = 3
+    idx_body_whl = 4
+    idx_carrying = 5
+    idx_extra = 6
+
     def __init__(self, brand, photo_file_name, carrying):
         self.brand = brand
         self.photo_file_name = photo_file_name
@@ -25,14 +35,14 @@ class CarBase:
 class Car(CarBase):
     def __init__(self, brand, photo_file_name, carrying, passenger_seats_count):
         super().__init__(brand, photo_file_name, carrying)
-        self.car_type = car_type[0]
+        self.car_type = car_type[car]
         self.passenger_seats_count = passenger_seats_count
 
 
 class Truck(CarBase):
     def __init__(self, brand, photo_file_name, carrying, body_whl):
         super().__init__(brand, photo_file_name, carrying)
-        self.car_type = car_type[1]
+        self.car_type = car_type[truck]
         self.__set_body_whl(body_whl)
 
     def __set_body_whl(self, body_whl):
@@ -58,18 +68,33 @@ class Truck(CarBase):
 class SpecMachine(CarBase):
     def __init__(self, brand, photo_file_name, carrying, extra):
         super().__init__(brand, photo_file_name, carrying)
-        self.car_type = car_type[2]
+        self.car_type = car_type[spec_machine]
         self.extra = extra
 
 
 def get_vehicle(params):
     try:
-        if params[0] == car_type[0]:
-            return Car(params[1], params[3], float(params[5]), int(params[2]))
-        if params[0] == car_type[1]:
-            return Truck(params[1], params[3], float(params[5]), params[4])
-        if params[0] == car_type[2]:
-            return SpecMachine(params[1], params[3], float(params[5]), params[6])
+        if params[CarBase.idx_car_type] == car_type[car]:
+            return Car(
+                params[CarBase.idx_brand],
+                params[CarBase.idx_photo_file_name],
+                float(params[CarBase.idx_carrying]),
+                int(params[CarBase.idx_passenger_seats_count])
+            )
+        if params[CarBase.idx_car_type] == car_type[truck]:
+            return Truck(
+                params[CarBase.idx_brand],
+                params[CarBase.idx_photo_file_name],
+                float(params[CarBase.idx_carrying]),
+                params[CarBase.idx_body_whl]
+            )
+        if params[CarBase.idx_car_type] == car_type[spec_machine]:
+            return SpecMachine(
+                params[CarBase.idx_brand],
+                params[CarBase.idx_photo_file_name],
+                float(params[CarBase.idx_carrying]),
+                params[CarBase.idx_extra]
+            )
         else:
             return None
     except IndexError:
